@@ -30,8 +30,8 @@ While the expression of biosignals in a group or in a visually public way has be
 ## Environment setting
 We performed our modeling inside the Anaconda virtual environment. The version of Anaconda we used is 22.9.0, and to create the same environment as ours, please enter the commands below.
 
-1. `git clone `
-2. `cd modeling`
+1. `git clone https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290.git`
+2. `cd final-submission-team-4-20233344-20235290`
 3. `conda env create -f conda_requirements.txt`
 
 ## Dataset download
@@ -40,13 +40,17 @@ We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) 
 ```bash
 .
 ├── conda_requirements.txt
-├── analysis.ipynb
-├── processing.ipynb
-├── evaluation.ipynb
-├── data
-│   ├── WESAD
-│   └── wesad.zip
-├── models
+├── modeling
+│   ├── analysis-for-collected-data.ipynb
+│   ├── processing.ipynb
+│   ├── evaluation.ipynb
+│   ├── extract_scaling_factor.ipynb
+│   ├── data
+│   │   ├── WESAD
+│   │   ├── arduino_ppg
+│   │   ├── processed
+│   │   └── wesad.zip
+│   └── models
 └── README.md
 ```
 
@@ -96,6 +100,10 @@ This file removes unnecessary parts (i.e., data from chest sensors) of the WESAD
 
 ### evaluation.ipynb
 Once you run the code of processing.ipynb, you would get `processed_*.csv` file that is used for modeling. In this file, the csv file will be loaded, and the features will be scaled by using MinMaxScaler from the sklearn package. After the evaluation process is done, the model that achieves the best accuracy will be converted into C source. The C source will be stored in `model` folder. The size of the converted model formed as C source file is 2.38 KB.
+
+### analysis-for-collected-data.ipynb
+This file generates the features of the collected data from Arduino. It will be used in `evaluation.ipynb`.
+
 
 ### extract_scaling_factor.ipynb
 The code in this file is for extracting scaling factors that are used for real-time scaling on Arduino board. 
