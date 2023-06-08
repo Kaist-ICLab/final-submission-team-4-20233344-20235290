@@ -40,17 +40,17 @@ We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) 
 ```bash
 .
 ├── conda_requirements.txt
-├── modeling
+├── modeling/
 │   ├── analysis-for-collected-data.ipynb
 │   ├── processing.ipynb
 │   ├── evaluation.ipynb
 │   ├── extract_scaling_factor.ipynb
-│   ├── data
+│   ├── data/
 │   │   ├── WESAD
 │   │   ├── arduino_ppg
 │   │   ├── processed
 │   │   └── wesad.zip
-│   └── models
+│   └── models/
 └── README.md
 ```
 
