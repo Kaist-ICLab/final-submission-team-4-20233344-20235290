@@ -102,7 +102,7 @@ This file removes unnecessary parts (i.e., data from chest sensors) of the WESAD
 Once you run the code of processing.ipynb, you would get `processed_*.csv` file that is used for modeling. In this file, the csv file will be loaded, and the features will be scaled by using MinMaxScaler from the sklearn package. After the evaluation process is done, the model that achieves the best accuracy will be converted into C source. The C source will be stored in `model` folder. The size of the converted model formed as C source file is 2.38 KB.
 
 ### analysis-for-collected-data.ipynb
-This file generates the features of the collected data from Arduino. The extracted featurs will be stored in `data/processed` as csv format. The csv files will be used in `evaluation.ipynb`.
+This file generates the features of the collected data from Arduino. The extracted featurs will be stored in `data/processed` as csv format. Data from stress and baseline condition should be processed through the code in this file, and the name of files will be `stress_*.csv` and `baseline_*.csv`, respectively. The csv files will be used in `evaluation.ipynb`.
 
 
 ### extract_scaling_factor.ipynb
