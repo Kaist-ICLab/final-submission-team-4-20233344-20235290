@@ -81,7 +81,7 @@ We used [window_slider](https://pypi.org/project/window-slider/) package to run 
 
 We adopted an ANN-based neural network with a very simple structure. The structure of the model we used follows the model proposed by a [previous study](https://ieeexplore.ieee.org/abstract/document/9183244). They achieved 95.21% of accuracy and 94.24% of f1-score using the WESAD dataset for stress detection. We follow the structure of their model because it performs well despite being a lightweight model.
 
-The input to the model is 9 features as described in the [section](#feature-extraction) above. The model performs the binary classification task of detecting stress vs non-stress. Therefore, the output of the model is 0 (non-stress) and 1 (stress). The figure below shows the summaries of deep learning architecture for the stress classification. As shown, our model requires 126 parameters.
+The input to the model is 9 features as described in the [section](##-💡-Feature-extraction) above. The model performs the binary classification task of detecting stress vs non-stress. Therefore, the output of the model is 0 (non-stress) and 1 (stress). The figure below shows the summaries of deep learning architecture for the stress classification. As shown, our model requires 126 parameters.
 
 <img width="500" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/1be3d226-5170-4661-9f21-3023e84d8533">
 
@@ -133,8 +133,8 @@ For the library `PeakDetection`, it is not found in Arduino IDE unlike other lib
 
 Also, you should modify the first line of `peripheral.ino` using your Arduino library directory to run the code correctly.
 
-```bash
-/[user_arduino_libraries_folder]/CircularBuffer/CircularBuffer.h
+```cpp
+#include </[user_arduino_libraries_folder]/CircularBuffer/CircularBuffer.h>
 ```
 
 If the setting is finished, you can **upload** the `central.ino` into the central device, and the `peripheral.ino` into the peripheral device.
@@ -164,19 +164,29 @@ You should download both `central`, `peripharal` folder. The main implementation
 
 
 ## 📄 File description
-Main structure for peripheral device follows the example of `KAIST_IoTDataScience/Lab12_TinyML_Hello_World/`. `peripheral.ino`, `constans.h`, `model.cpp` is newly implemented for this preoject ( * - starred in the [above](##-Directory-Structure)).
+Main structure for peripheral device (`peripheral/`) follows the example of `KAIST_IoTDataScience/Lab12_TinyML_Hello_World/`. 
+
+`peripheral.ino`, `constans.h`, `model.cpp` has the part that is newly implemented for this project ( * - starred in the [above](##-Directory-Structure)).
 
 ### peripheral.ino
+In the loop, the first and second chunk is running **to collect the data from sensor** if it is time to sample (by the sampling rate pre-declared). 
 
-
-
-### central.ino
-If it is connected to peripheral device, it goes into the while loop. In the loop, the timer is periodically called (_PERIOD = window size * overlap ratio * number of inference in one cycle_, which is 15s = 30 * 0.9 * 5 in this file). By the transmitted values from the peripheral(`beat_per_period` and `stress_lv`), calculate the interval between the beat and motor level. When the next beat started by the calculation, motor is activated. 
+When the buffer for the data windowing is full, the feature extraction as explained above [section](##-💡-Real-time-feature-extraction) started. Using the extracted features and the scaling factor/min, normalized values is used in running the inference. The outputs are displayed with the LED. It is transmitted with the bluetooth communication after the several inferences were occured. After feature extraction the process ended, vacate the circular buffer for window shifting (_window size * (1 - overlap ratio)_, which is 3s in this file)
 
 ### constants.h
 
-[`extract_scaling_factor.ipynb`](###-extract_scaling_factor.ipynb) 로부터 scaling factor를 받아와서 바꿔야한다
+In this file, some constants used in the `peripheral.ino` such as the sampling freq. of sensors are saved. For the `SCALING_FACTOR[9]` and `SCALING_MIN[9]`, it is personalized scale for one of the researcher, so you should change it in order to fit to your own data. The way of using is below.
 
+1. Collect the ppg sensor and temperature sensor data in two different setting
+    * **Baseline setting**: Meditation (*3 mins*)
+    * **Stress setting**: Mental Arithmetic Task (*3 mins*) [Example Link](https://rankyourbrain.com/mental-math/mental-math-test-advanced/results)  
+1. Run the [`extract_scaling_factor.ipynb`](###-extract_scaling_factor.ipynb) 
+1. Get the scaling factor and scaling min, and replace the contants in this file.
 ### model.cpp
 
-The converted C source model stored in `modeling/models/model.cc` 를 복사해서 바꿔두었다.
+The converted C source model stored in `modeling/models/model.cc` from the best model by the [`evaluation.ipynb`](###-evaluation.ipynb) is copied in this file. It is not quantized because it's lightweighted enough without quantization.
+
+---
+
+### central/central.ino
+If it is connected to peripheral device, it goes into the while loop. In the loop, the timer is periodically called (_PERIOD = window size * overlap ratio * number of inference in one cycle_, which is 15s = 30 * 0.9 * 5 in this file). By the transmitted values from the peripheral(`beat_per_period` and `stress_lv`), calculate the interval between the beat and motor level. When the next beat started by the calculation, motor is activated. 
