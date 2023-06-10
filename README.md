@@ -27,8 +27,7 @@ While the expression of biosignals in a group or in a visually public way has be
 [Vibration motor](https://www.devicemart.co.kr/goods/view?no=12515096) 
 
 ### Circuit Diagram for each device
-// 채워넣을 예정
-
+<img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/80015199/f7f55298-6fc1-4c9c-859a-c65018debe22">
 
 
 # 👩🏻‍💻 Modeling
