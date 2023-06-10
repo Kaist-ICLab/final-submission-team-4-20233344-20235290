@@ -1,22 +1,22 @@
-# Pit-a-Pat
+# 💓 Pit-a-Pat
 Our team implemented a system called Pit-a-Pat, which can detect one’s stress level and express it to a partner by changing the amplitude of the heartbeat vibration. The system was developed for the mini-proejct of the coursework, which is "CS565 IoT Data Science" at KAIST. 
 
 Authors: Hyesoo Park(hyehye@kaist.ac.kr) and Tae-Hoon Lee(th.lee@kaist.ac.kr)
 
-## Demo video
+## 🎥 Demo video
 
-## Presentation slides
+## 📢 Presentation slides
 <img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/d24373b9-1e6a-4c55-a43a-4a6e2d35c1b2">
 
 [Link to the slides](https://docs.google.com/presentation/d/1nr1iNvllwkr2UorulvrPxBd-E-VGa7PmlZvasYQV54c/edit?usp=sharing)
 
-## Introduction
+## ℹ️ Introduction
 Expressing and sharing biosignals have gained significant attention in the field of Human-Computer Interaction (HCI) as a means to facilitate user understanding and foster empathy. Previous research has explored visual representations of biosignals, such as numbers and charts. Visual and audio expressions have shown to improve feelings of connectedness and intimacy between users. People tend to interpret heart rate information in relation to emotions and stress levels, similar to the effects of facial expressions. Additionally, studies have demonstrated that hearing a heartbeat can have a comparable impact to direct eye contact.
 
 While the expression of biosignals in a group or in a visually public way has been extensively studied, there is a lack of research on whether the expression of biosignals in a private way (e.g., vibration) enhances connectedness. Thus, we proposes a way to communicate biosignals in real time between two devices in a private manner. Our study aims to investigate whether 1) we can use TinyML devices for real-time stress level classification(using PPG, skin temp.) and whether 2) sharing heartbeat through device’s vibration strengthens the connectedness between two partners.
 
 
-## Hardware component
+## 🔌 Hardware component
 ### List of Hardware components
 [Arduino Nano 33 BLE Sense](https://www.devicemart.co.kr/goods/view?no=10919317) 
 
@@ -31,15 +31,15 @@ While the expression of biosignals in a group or in a visually public way has be
 
 
 
-# Modeling
-## Environment setting
+# 👩🏻‍💻 Modeling
+## ⚙️ Environment setting
 We performed our modeling inside the Anaconda virtual environment. The version of Anaconda we used is 22.9.0, and to create the same environment as ours, please enter the commands below.
 
 1. `git clone https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290.git`
 2. `cd final-submission-team-4-20233344-20235290`
 3. `conda env create -f conda_requirements.txt`
 
-## Dataset download
+## 📁 Dataset download
 We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) to train and test our model, which is widely used in the field of affective computing. You can download the WESAD dataset from [this link](https://peterhcharlton.github.io/info/datasets/wesad). After downloading it, move 'wesad.zip' to the 'data' directory and unzip it. The directory structure after this process is shown below.
 
 ```bash
@@ -59,7 +59,7 @@ We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) 
 └── README.md
 ```
 
-## Data description
+## 📝 Data description
 WESAD dataset was collected from both a chest-worn device RespiBAN Professional and a wrist-worn device Empatica E4. It contains motion and physiological data such as Respiration, Electrocardiogram, Blood volume pulse, Electrodermal activity, Skin temperature, Accelerometer and so on. In this project, we focus only on data from the wrist-worn device because our prototype is worn on the wrist. The below table shows the used sensors in our project and their sampling rate.
 
 <img width="600" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/232ccbe7-a71c-4897-a919-45a044a295e8">
@@ -70,12 +70,12 @@ There are 15 subject in WESAD dataset, however, we used data from four subjects 
 
 
 
-## Feature extraction
+## 💡 Feature extraction
 We used [window_slider](https://pypi.org/project/window-slider/) package to run sliding window with overlapping. The window size is 30s and overlapped rate is 0.9 (i.e., 27s between the previous and the current window is overlapped.). We extracted features from each sliding window. The below table organizes the definition of the extracted features and which features are used in the project.
 <img width="700" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/2af776c3-50e2-4408-8697-5d1b7331e430">
 
 
-## Model description
+## 💬 Model description
 <img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/81eaf87f-8b82-46ee-9f19-b7f5a7b15e5f">
 
 
@@ -86,7 +86,7 @@ The input to the model is 9 features as described in the [section](#feature-extr
 <img width="500" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/1be3d226-5170-4661-9f21-3023e84d8533">
 
 
-## Evaluation
+## 💯 Evaluation
 <img width="735" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/c986f635-c8ac-4e70-9508-f6771b64689e">
 
 This figure shows the overview of the evaluation process.
@@ -99,7 +99,7 @@ Humans differ in their individual reactions to affective stimuli, resulting in g
 In our experiments, the accruacy and f1-score were 88.65% and 83.11% obtained through LOSO validation, respectively. Among the 4 models trained with the LOSO validation procedure, we selected the best performing model for evaluation with the dataset we collected from Arduino. The accuracy and f1-score of the best model on the dataset from Arduino are 81.11% and 84.62%, respectively.
 
 
-## File description
+## 📄 File description
 ### processing.ipynb
 This file removes unnecessary parts (i.e., data from chest sensors) of the WESAD dataset, and performs windowing and feature extraction. After running all the code in this file, subject-specific data is stored in the form of pickle files in the `data/wrist-only` folder. The data from subjects is combined into one csv file and saved as `processed_*.csv` in the `data` folder.
 
@@ -115,7 +115,7 @@ The code in this file is for extracting scaling factors that are used for real-t
 
 
 # Arduino
-## Library setting
+## ⚙️ Library setting
 
 You need to install several libraries to run the arduino files. The list is below.
 
@@ -123,17 +123,24 @@ You need to install several libraries to run the arduino files. The list is belo
 1. `CircularBuffer` ([LINK](https://github.com/rlogiacco/CircularBuffer))
 1. `EmotiBit_ArduinoFilters` ([LINK](https://github.com/EmotiBit/EmotiBit_ArduinoFilters))
 1. `PeakDetection` ([LINK](https://github.com/leandcesar/PeakDetection/tree/master))
+1. `KAIST_IoTDataScience` ([LINK](https://docs.google.com/document/d/1RkVzO9BRBFxpABKsdp_7ik8IUWONbQ7sJxS0z6xoUu4/edit))
 
-For the library `PeakDetection`, it is not found in Arduino IDE unlike other libraries, so please download from its github page and unzip on the library of your Arduino library directory similar as below.
+For the library `PeakDetection`, it is not found in Arduino IDE unlike other libraries, so please download from its [github page](https://github.com/leandcesar/PeakDetection/tree/master) and unzip on the library of your **Arduino library directory** similar as below.
 
 ```bash
-/Users/[user_name]/Documents/Arduino/libraries/PeakDetection/PeakDetection.h
+/Users/[user_name]/Documents/Arduino/libraries/PeakDetection/
 ```
 
+Also, you should modify the first line of `peripheral.ino` using your Arduino library directory to run the code correctly.
+
+```bash
+/[user_arduino_libraries_folder]/CircularBuffer/CircularBuffer.h
+```
+
+If the setting is finished, you can **upload** the `central.ino` into the central device, and the `peripheral.ino` into the peripheral device.
 
 
-
-## Directory Structure
+## 📁 Directory Structure
 You should download both `central`, `peripharal` folder. The main implementation & run file is `central/central.ino` and `peripheral/peripheral.ino`. The directory structure is shown below.
 
 ```bash
@@ -152,22 +159,23 @@ You should download both `central`, `peripharal` folder. The main implementation
     └── peripheral.ino *
 ```
 
-## Real-time feature extraction
+## 💡 Real-time feature extraction
 
 
 
-## File description
+## 📄 File description
 Main structure for peripheral device follows the example of `KAIST_IoTDataScience/Lab12_TinyML_Hello_World/`. `peripheral.ino`, `constans.h`, `model.cpp` is newly implemented for this preoject ( * - starred in the [above](##-Directory-Structure)).
-
-### central.ino
 
 ### peripheral.ino
 
 
 
+### central.ino
+If it is connected to peripheral device, it goes into the while loop. In the loop, the timer is periodically called (_PERIOD = window size * overlap ratio * number of inference in one cycle_, which is 15s = 30 * 0.9 * 5 in this file). By the transmitted values from the peripheral(`beat_per_period` and `stress_lv`), calculate the interval between the beat and motor level. When the next beat started by the calculation, motor is activated. 
+
 ### constants.h
 
-`extract_scaling_factor.ipynb` 로부터 scaling factor를 받아와서 바꿔야한다
+[`extract_scaling_factor.ipynb`](###-extract_scaling_factor.ipynb) 로부터 scaling factor를 받아와서 바꿔야한다
 
 ### model.cpp
 
