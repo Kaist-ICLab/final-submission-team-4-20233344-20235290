@@ -72,6 +72,7 @@ There are 15 subject in WESAD dataset, however, we used data from four subjects 
 
 ## 💡 Feature extraction
 We used [window_slider](https://pypi.org/project/window-slider/) package to run sliding window with overlapping. The window size is 30s and overlapped rate is 0.9 (i.e., 27s between the previous and the current window is overlapped.). We extracted features from each sliding window. The below table organizes the definition of the extracted features and which features are used in the project.
+
 <img width="700" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/2af776c3-50e2-4408-8697-5d1b7331e430">
 
 
@@ -162,11 +163,11 @@ You should download both `central`, `peripharal` folder. The main implementation
 
 ## 💡 Real-time feature extraction
 
-In the `peripheral.ino`, feature extraction for stress inference is implemented. Simple array type can be used, however the memory and runtime for re-allocating will be exceed the capacity of microcontroller. 
+In the `peripheral.ino`, feature extraction for stress inference is implemented. The descripation of 9 features is explained above [section](#-Feature-extraction). Simple array type can be used, however the memory and runtime for re-allocating will be exceed the capacity of microcontroller. 
 
 Therefore, we used circular buffer data type to handle this problem. It is a data structure that uses a **single, fixed-size buffer as if it were connected end-to-end**. This structure lends itself easily to buffering data streams ([source](https://en.wikipedia.org/wiki/Circular_buffer)).
 
-For the specific library used in this project, please visit the source [githup page](https://github.com/rlogiacco/CircularBuffer).
+If you have any question on the library used in this project, please visit the source [githup page](https://github.com/rlogiacco/CircularBuffer).
 
 Using this buffer, it collects the data from the sensor. The below code snippet is from the `void loop()` in the `peripheral.ino`.
 
@@ -177,6 +178,23 @@ if (timer_bvp_sample) {
     bvp.push(analogRead(A1));
     ...
 }    
+```
+Especially for the peak detection, collecting data is not simple as the PPG or temperature sensor data. Using the [`peakDetection`](https://github.com/leandcesar/PeakDetection/tree/master) library, we implemented the real-time peak detection.
+
+```cpp
+...
+int peak = peakDetection.getPeak();
+if (peak > 0 && prev_peak < peak) {
+    peaks.push(peak);
+} else peaks.push(0);
+prev_peak = peak;
+...
+```
+The `peaks` is buffer that has exactly same length with `bvp`, and it has binary values `0` or `1`. It is difficult to use the value `peakDetection.getPeak()` returns directly as the number of peak. The example is below.
+
+```cpp
+>> 0 0 0 1 1 1 1 0 0 0 // peakDetection.getPeak() by time
+>> 0 0 0 1 0 0 0 0 0 0 // Only detecting 0 to 1 change
 ```
 
 When the buffer is full, feature extraction started.
@@ -189,7 +207,7 @@ if (bvp.isFull()) {
     ...
 }
 ```
-For each feature, the way of calculating the feature is described in the file `peripheral.ino`
+For each feature, the way of calculating the feature is described in the file `peripheral.ino`.
 
 
 ## 📄 File description
@@ -209,11 +227,11 @@ In this file, some constants used in the `peripheral.ino` such as the sampling f
 1. Collect the ppg sensor and temperature sensor data in two different setting
     * **Baseline setting**: Meditation (*3 mins*)
     * **Stress setting**: Mental Arithmetic Task (*3 mins*) [Example Link](https://rankyourbrain.com/mental-math/mental-math-test-advanced/results)  
-1. Run the [`extract_scaling_factor.ipynb`](#-extract_scaling_factor.ipynb) 
+1. Run the [`extract_scaling_factor.ipynb`](#-extract_scaling_factoripynb) 
 1. Get the scaling factor and scaling min, and replace the contants in this file.
 ### model.cpp
 
-The converted C source model stored in `modeling/models/model.cc` from the best model by the [`evaluation.ipynb`](#-evaluation.ipynb) is copied in this file. It is not quantized because it's lightweighted enough without quantization.
+The converted C source model stored in `modeling/models/model.cc` from the best model by the [`evaluation.ipynb`](#-evaluationipynb) is copied in this file. It is not quantized because it's lightweighted enough without quantization.
 
 ---
 
