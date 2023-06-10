@@ -236,7 +236,8 @@ void loop() {
     for (int i = 0; i < NUMBER_OF_FEATURES; i++) {  // Feature scaling to make the feature values ranging from 0 to 1
       float raw_val = features[i];
       float val = features[i]* SCALING_FACTOR[i] + SCALING_MIN[i];
-      // float val = i;
+
+      // For the outliers, make the scaled features 0 or 1
       if  (val > 1) {
         val = 1;
       } else if (val < 0) {
@@ -252,10 +253,6 @@ void loop() {
     // Run inference, and report any error
     TfLiteStatus invoke_status = interpreter->Invoke();
 
-    // if (invoke_status != kTfLiteOk) {
-    //   TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed");
-    //   return;
-    // }
 
     // Obtain the quantized output from model's output tensor
     float y_0 = output->data.f[0];  // Probability of non-stress  
@@ -293,8 +290,8 @@ void loop() {
       byte stress_transmission[2];
       stress_transmission[0] = (byte) beat_per_period;
       stress_transmission[1] = stress_lv;
-      Serial.print("* heartrate: ");
-      Serial.println(stress_transmission[0] * 4);
+      Serial.print("* heartrate (bpm): ");
+      Serial.println(stress_transmission[0] * 60 / (num_inferences_per_cycle * WND * (1-OVERLAP))); // To calculate the BPM(per min)
       Serial.print("* stress level: ");
       Serial.println(stress_transmission[1]);
 
@@ -306,7 +303,7 @@ void loop() {
         Serial.println("* Disconnected to central device!");
       }
       
-      // clearing vals
+      // clearing vals for bluetooth
       inference_count = 0;
       for (int i = 0; i < num_inferences_per_cycle; i++) {
         stress_inference[i] = 0;

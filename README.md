@@ -17,6 +17,7 @@ While the expression of biosignals in a group or in a visually public way has be
 
 
 ## Hardware component
+### List of Hardware components
 [Arduino Nano 33 BLE Sense](https://www.devicemart.co.kr/goods/view?no=10919317) 
 
 [PPG sensor](https://www.devicemart.co.kr/goods/view?no=1327536) 
@@ -24,6 +25,10 @@ While the expression of biosignals in a group or in a visually public way has be
 [Temperature sensor](https://www.devicemart.co.kr/goods/view?no=3183) 
 
 [Vibration motor](https://www.devicemart.co.kr/goods/view?no=12515096) 
+
+### Circuit Diagram for each device
+// 채워넣을 예정
+
 
 
 # Modeling
@@ -46,9 +51,9 @@ We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) 
 │   ├── evaluation.ipynb
 │   ├── extract_scaling_factor.ipynb
 │   ├── data/
-│   │   ├── WESAD
-│   │   ├── arduino_ppg
-│   │   ├── processed
+│   │   ├── WESAD/
+│   │   ├── arduino_ppg/
+│   │   ├── processed/
 │   │   └── wesad.zip
 │   └── models/
 └── README.md
@@ -110,4 +115,60 @@ The code in this file is for extracting scaling factors that are used for real-t
 
 
 # Arduino
-## Central
+## Library setting
+
+You need to install several libraries to run the arduino files. The list is below.
+
+1. `ArduinoBLE` ([LINK](https://www.arduino.cc/reference/en/libraries/arduinoble/))
+1. `CircularBuffer` ([LINK](https://github.com/rlogiacco/CircularBuffer))
+1. `EmotiBit_ArduinoFilters` ([LINK](https://github.com/EmotiBit/EmotiBit_ArduinoFilters))
+1. `PeakDetection` ([LINK](https://github.com/leandcesar/PeakDetection/tree/master))
+
+For the library `PeakDetection`, it is not found in Arduino IDE unlike other libraries, so please download from its github page and unzip on the library of your Arduino library directory similar as below.
+
+```bash
+/Users/[user_name]/Documents/Arduino/libraries/PeakDetection/PeakDetection.h
+```
+
+
+
+
+## Directory Structure
+You should download both `central`, `peripharal` folder. The main implementation & run file is `central/central.ino` and `peripheral/peripheral.ino`. The directory structure is shown below.
+
+```bash
+.
+├── central/
+│   ├── central.ino *
+└── peripheral/
+    ├── arduino_constants.cpp 
+    ├── arduino_main.cpp
+    ├── arduino_output_handler.cpp
+    ├── constants.h *
+    ├── main_functions.h
+    ├── model.cpp *
+    ├── model.h 
+    ├── output_handler.h
+    └── peripheral.ino *
+```
+
+## Real-time feature extraction
+
+
+
+## File description
+Main structure for peripheral device follows the example of `KAIST_IoTDataScience/Lab12_TinyML_Hello_World/`. `peripheral.ino`, `constans.h`, `model.cpp` is newly implemented for this preoject ( * - starred in the [above](##-Directory-Structure)).
+
+### central.ino
+
+### peripheral.ino
+
+
+
+### constants.h
+
+`extract_scaling_factor.ipynb` 로부터 scaling factor를 받아와서 바꿔야한다
+
+### model.cpp
+
+The converted C source model stored in `modeling/models/model.cc` 를 복사해서 바꿔두었다.
