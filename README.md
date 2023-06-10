@@ -13,7 +13,7 @@ Authors: Hyesoo Park(hyehye@kaist.ac.kr) and Tae-Hoon Lee(th.lee@kaist.ac.kr)
 ## ℹ️ Introduction
 Expressing and sharing biosignals have gained significant attention in the field of Human-Computer Interaction (HCI) as a means to facilitate user understanding and foster empathy. Previous research has explored visual representations of biosignals, such as numbers and charts. Visual and audio expressions have shown to improve feelings of connectedness and intimacy between users. People tend to interpret heart rate information in relation to emotions and stress levels, similar to the effects of facial expressions. Additionally, studies have demonstrated that hearing a heartbeat can have a comparable impact to direct eye contact.
 
-While the expression of biosignals in a group or in a visually public way has been extensively studied, there is a lack of research on whether the expression of biosignals in a private way (e.g., vibration) enhances connectedness. Thus, we proposes a way to communicate biosignals in real time between two devices in a private manner. Our study aims to investigate whether 1) we can use TinyML devices for real-time stress level classification(using PPG, skin temp.) and whether 2) sharing heartbeat through device’s vibration strengthens the connectedness between two partners.
+While the expression of biosignals in a group or in a visually public way has been extensively studied, there is a lack of research on whether the expression of biosignals in a private way (e.g., vibration) enhances connectedness. Thus, we proposes a way to communicate biosignals in real time between two devices in a private manner. Our study aims to investigate whether **1) we can use TinyML devices for real-time stress level classification(using PPG, skin temp.) and whether 2) sharing heartbeat through device’s vibration strengthens the connectedness between two partners**.
 
 
 ## 🔌 Hardware component
@@ -81,7 +81,7 @@ We used [window_slider](https://pypi.org/project/window-slider/) package to run 
 
 We adopted an ANN-based neural network with a very simple structure. The structure of the model we used follows the model proposed by a [previous study](https://ieeexplore.ieee.org/abstract/document/9183244). They achieved 95.21% of accuracy and 94.24% of f1-score using the WESAD dataset for stress detection. We follow the structure of their model because it performs well despite being a lightweight model.
 
-The input to the model is 9 features as described in the [section](##-💡-Feature-extraction) above. The model performs the binary classification task of detecting stress vs non-stress. Therefore, the output of the model is 0 (non-stress) and 1 (stress). The figure below shows the summaries of deep learning architecture for the stress classification. As shown, our model requires 126 parameters.
+The input to the model is 9 features as described in the [section](#-Feature-extraction) above. The model performs the binary classification task of detecting stress vs non-stress. Therefore, the output of the model is 0 (non-stress) and 1 (stress). The figure below shows the summaries of deep learning architecture for the stress classification. As shown, our model requires 126 parameters.
 
 <img width="500" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/1be3d226-5170-4661-9f21-3023e84d8533">
 
@@ -114,16 +114,17 @@ This file generates the features of the collected data from Arduino. The extract
 The code in this file is for extracting scaling factors that are used for real-time scaling on Arduino board. 
 
 
-# Arduino
+# 🤖 Arduino
 ## ⚙️ Library setting
 
 You need to install several libraries to run the arduino files. The list is below.
 
 1. `ArduinoBLE` ([LINK](https://www.arduino.cc/reference/en/libraries/arduinoble/))
+1. `KAIST_IoTDataScience` ([LINK](https://docs.google.com/document/d/1RkVzO9BRBFxpABKsdp_7ik8IUWONbQ7sJxS0z6xoUu4/edit))
 1. `CircularBuffer` ([LINK](https://github.com/rlogiacco/CircularBuffer))
 1. `EmotiBit_ArduinoFilters` ([LINK](https://github.com/EmotiBit/EmotiBit_ArduinoFilters))
 1. `PeakDetection` ([LINK](https://github.com/leandcesar/PeakDetection/tree/master))
-1. `KAIST_IoTDataScience` ([LINK](https://docs.google.com/document/d/1RkVzO9BRBFxpABKsdp_7ik8IUWONbQ7sJxS0z6xoUu4/edit))
+
 
 For the library `PeakDetection`, it is not found in Arduino IDE unlike other libraries, so please download from its [github page](https://github.com/leandcesar/PeakDetection/tree/master) and unzip on the library of your **Arduino library directory** similar as below.
 
@@ -161,17 +162,45 @@ You should download both `central`, `peripharal` folder. The main implementation
 
 ## 💡 Real-time feature extraction
 
+In the `peripheral.ino`, feature extraction for stress inference is implemented. Simple array type can be used, however the memory and runtime for re-allocating will be exceed the capacity of microcontroller. 
+
+Therefore, we used circular buffer data type to handle this problem. It is a data structure that uses a **single, fixed-size buffer as if it were connected end-to-end**. This structure lends itself easily to buffering data streams ([source](https://en.wikipedia.org/wiki/Circular_buffer)).
+
+For the specific library used in this project, please visit the source [githup page](https://github.com/rlogiacco/CircularBuffer).
+
+Using this buffer, it collects the data from the sensor. The below code snippet is from the `void loop()` in the `peripheral.ino`.
+
+```cpp
+CircularBuffer<int, arr_size_bvp> bvp;
+
+if (timer_bvp_sample) {
+    bvp.push(analogRead(A1));
+    ...
+}    
+```
+
+When the buffer is full, feature extraction started.
+
+```cpp
+if (bvp.isFull()) {
+    int min_bvp = 1500;
+    int max_bvp = -100;
+    float mean_bvp = 0;
+    ...
+}
+```
+For each feature, the way of calculating the feature is described in the file `peripheral.ino`
 
 
 ## 📄 File description
 Main structure for peripheral device (`peripheral/`) follows the example of `KAIST_IoTDataScience/Lab12_TinyML_Hello_World/`. 
 
-`peripheral.ino`, `constans.h`, `model.cpp` has the part that is newly implemented for this project ( * - starred in the [above](##-Directory-Structure)).
+`peripheral.ino`, `constans.h`, `model.cpp` has the part that is newly implemented for this project ( * - starred in the [above](#-Directory-Structure)).
 
 ### peripheral.ino
 In the loop, the first and second chunk is running **to collect the data from sensor** if it is time to sample (by the sampling rate pre-declared). 
 
-When the buffer for the data windowing is full, the feature extraction as explained above [section](##-💡-Real-time-feature-extraction) started. Using the extracted features and the scaling factor/min, normalized values is used in running the inference. The outputs are displayed with the LED. It is transmitted with the bluetooth communication after the several inferences were occured. After feature extraction the process ended, vacate the circular buffer for window shifting (_window size * (1 - overlap ratio)_, which is 3s in this file)
+When the buffer for the data windowing is full, the feature extraction as explained above [section](#-Real-time-feature-extraction) started. Using the extracted features and the scaling factor/min, normalized values is used in running the inference. The outputs are displayed with the LED. It is transmitted with the bluetooth communication after the several inferences were occured. After feature extraction the process ended, vacate the circular buffer for window shifting (_window size * (1 - overlap ratio)_, which is 3s in this file)
 
 ### constants.h
 
@@ -180,11 +209,11 @@ In this file, some constants used in the `peripheral.ino` such as the sampling f
 1. Collect the ppg sensor and temperature sensor data in two different setting
     * **Baseline setting**: Meditation (*3 mins*)
     * **Stress setting**: Mental Arithmetic Task (*3 mins*) [Example Link](https://rankyourbrain.com/mental-math/mental-math-test-advanced/results)  
-1. Run the [`extract_scaling_factor.ipynb`](###-extract_scaling_factor.ipynb) 
+1. Run the [`extract_scaling_factor.ipynb`](#-extract_scaling_factor.ipynb) 
 1. Get the scaling factor and scaling min, and replace the contants in this file.
 ### model.cpp
 
-The converted C source model stored in `modeling/models/model.cc` from the best model by the [`evaluation.ipynb`](###-evaluation.ipynb) is copied in this file. It is not quantized because it's lightweighted enough without quantization.
+The converted C source model stored in `modeling/models/model.cc` from the best model by the [`evaluation.ipynb`](#-evaluation.ipynb) is copied in this file. It is not quantized because it's lightweighted enough without quantization.
 
 ---
 
