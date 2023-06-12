@@ -4,6 +4,8 @@ Our team implemented a system called Pit-a-Pat, which can detect one’s stress 
 Authors: Hyesoo Park(hyehye@kaist.ac.kr) and Tae-Hoon Lee(th.lee@kaist.ac.kr)
 
 ## 🎥 Demo video
+[![[CS565] Mini-project: Pit-a-pat (Team 4)](https://img.youtube.com/vi/pnacPsE0Fk8/0.jpg)](https://www.youtube.com/watch?v=pnacPsE0Fk8 "[CS565] Mini-project: Pit-a-pat (Team 4)")
+
 
 ## 📢 Presentation slides
 <img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/d24373b9-1e6a-4c55-a43a-4a6e2d35c1b2">
