@@ -237,4 +237,4 @@ The converted C source model stored in `modeling/models/model.cc` from the best 
 ---
 
 ### central/central.ino
-If it is connected to peripheral device, it goes into the while loop. In the loop, the timer is periodically called (_PERIOD = window size * overlap ratio * number of inference in one cycle_, which is 15s = 30 * 0.9 * 5 in this file). By the transmitted values from the peripheral(`beat_per_period` and `stress_lv`), calculate the interval between the beat and motor level. When the next beat started by the calculation, motor is activated. 
+If it is connected to peripheral device, it goes into the while loop. In the loop, the timer is periodically called (_PERIOD = window size * (1 - overlap ratio) * number of inference in one cycle_, which is 15s = 30 * (1 - 0.9) * 5 in this file). By the transmitted values from the peripheral(`beat_per_period` and `stress_lv`), calculate the interval between the beat and motor level. When the next beat started by the calculation, motor is activated. 
