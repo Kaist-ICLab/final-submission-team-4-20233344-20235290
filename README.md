@@ -8,7 +8,7 @@ Authors: Hyesoo Park(hyehye@kaist.ac.kr) and Tae-Hoon Lee(th.lee@kaist.ac.kr)
 
 
 ## 📢 Presentation slides
-<img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/d24373b9-1e6a-4c55-a43a-4a6e2d35c1b2">
+<img width="800" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/ac4f6a0d-8f16-47a4-b0c8-bcbd392e6cf2">
 
 [Link to the slides](https://docs.google.com/presentation/d/1nr1iNvllwkr2UorulvrPxBd-E-VGa7PmlZvasYQV54c/edit?usp=sharing)
 
@@ -29,7 +29,7 @@ While the expression of biosignals in a group or in a visually public way has be
 [Vibration motor](https://www.devicemart.co.kr/goods/view?no=12515096) 
 
 ### Circuit Diagram for each device
-<img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/80015199/f7f55298-6fc1-4c9c-859a-c65018debe22">
+<img width="800" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/3771584c-bd6f-4a6a-b8da-80dc41169a4a">
 
 
 # 👩🏻‍💻 Modeling
@@ -63,7 +63,8 @@ We used the [WESAD dataset](https://dl.acm.org/doi/pdf/10.1145/3242969.3242985) 
 ## 📝 Data description
 WESAD dataset was collected from both a chest-worn device RespiBAN Professional and a wrist-worn device Empatica E4. It contains motion and physiological data such as Respiration, Electrocardiogram, Blood volume pulse, Electrodermal activity, Skin temperature, Accelerometer and so on. In this project, we focus only on data from the wrist-worn device because our prototype is worn on the wrist. The below table shows the used sensors in our project and their sampling rate.
 
-<img width="600" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/232ccbe7-a71c-4897-a919-45a044a295e8">
+<img width="600" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/e0aa672f-516e-4a3b-afd5-955c3480fc66">
+
 
 During the data collection, subjects were asked to go through various condition such as baseline condition, amusement condition, stress condition. Previous studies used the study protocol conditions as labels that were used for modeling. Since our interest is how stressed the subjects were, we treated the labels as stress condition and non-stress condition (i.e., baseline condition). 
 
@@ -74,22 +75,23 @@ There are 15 subject in WESAD dataset, however, we used data from four subjects 
 ## 💡 Feature extraction
 We used [window_slider](https://pypi.org/project/window-slider/) package to run sliding window with overlapping. The window size is 30s and overlapped rate is 0.9 (i.e., 27s between the previous and the current window is overlapped.). We extracted features from each sliding window. The below table organizes the definition of the extracted features and which features are used in the project.
 
-<img width="700" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/2af776c3-50e2-4408-8697-5d1b7331e430">
+<img width="700" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/1c96a7dc-d6dc-4379-bc74-73712d19a624">
 
 
 ## 💬 Model description
-<img width="800" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/81eaf87f-8b82-46ee-9f19-b7f5a7b15e5f">
+<img width="800" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/f0cde1f5-ab33-4e33-b8a6-89e250792d88">
 
 
 We adopted an ANN-based neural network with a very simple structure. The structure of the model we used follows the model proposed by a [previous study](https://ieeexplore.ieee.org/abstract/document/9183244). They achieved 95.21% of accuracy and 94.24% of f1-score using the WESAD dataset for stress detection. We follow the structure of their model because it performs well despite being a lightweight model.
 
 The input to the model is 9 features as described in the [section](#-Feature-extraction) above. The model performs the binary classification task of detecting stress vs non-stress. Therefore, the output of the model is 0 (non-stress) and 1 (stress). The figure below shows the summaries of deep learning architecture for the stress classification. As shown, our model requires 126 parameters.
 
-<img width="500" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/1be3d226-5170-4661-9f21-3023e84d8533">
+<img width="500" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/90416a06-9fc9-4759-a90c-5bb053f5eea3">
 
 
 ## 💯 Evaluation
-<img width="735" alt="image" src="https://github.com/CS565-Pit-a-Pat/modeling/assets/27489013/c986f635-c8ac-4e70-9508-f6771b64689e">
+<img width="735" alt="image" src="https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/assets/27489013/15dea6b1-e5ea-40a4-ab69-2fdff5e7fe83">
+
 
 This figure shows the overview of the evaluation process.
 For evaluation, we used two datasets which are WESAD dataset and the dataset we collected from Arduino.
