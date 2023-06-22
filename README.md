@@ -12,6 +12,9 @@ Authors: Hyesoo Park(hyehye@kaist.ac.kr) and Tae-Hoon Lee(th.lee@kaist.ac.kr)
 
 [Link to the slides](https://docs.google.com/presentation/d/1nr1iNvllwkr2UorulvrPxBd-E-VGa7PmlZvasYQV54c/edit?usp=sharing)
 
+## 📄 Final report
+[Link to the report](https://github.com/Kaist-ICLab/final-submission-team-4-20233344-20235290/blob/main/Final-report_Pit_a_Pat.pdf)
+
 ## ℹ️ Introduction
 Expressing and sharing biosignals have gained significant attention in the field of Human-Computer Interaction (HCI) as a means to facilitate user understanding and foster empathy. Previous research has explored visual representations of biosignals, such as numbers and charts. Visual and audio expressions have shown to improve feelings of connectedness and intimacy between users. People tend to interpret heart rate information in relation to emotions and stress levels, similar to the effects of facial expressions. Additionally, studies have demonstrated that hearing a heartbeat can have a comparable impact to direct eye contact.
 
